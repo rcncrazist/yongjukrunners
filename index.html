@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>용죽러너스 가을대회 맞춤형 여름 훈련 스케줄 생성기 (6~7월)</title>
+    <title>용죽러너스 가을대회 맞춤형 여름/합숙 훈련 스케줄 생성기</title>
     <style>
         /* 기본 베이스 설정 */
         body { 
@@ -40,7 +40,7 @@
             display: flex; 
             justify-content: center; 
             gap: 12px; 
-            margin-bottom: 20px; 
+            margin-bottom: 15px; 
             flex-wrap: wrap;
         }
         .radio-label { 
@@ -59,6 +59,23 @@
         }
         input[type="radio"] { display: none; }
         input[type="radio"]:checked + .radio-label { background: #1e3d59; color: #fff; border-color: #1e3d59; }
+
+        /* 훈련 시기 선택 전용 스타일 */
+        .season-group {
+            margin-bottom: 25px;
+        }
+        .season-group .radio-label {
+            background: #fff5f2;
+            color: #ff6f3c;
+        }
+        .season-group .radio-label:hover {
+            background: #ffebe5;
+        }
+        .season-group input[type="radio"]:checked + .radio-label {
+            background: #ff6f3c;
+            color: #fff;
+            border-color: #ff6f3c;
+        }
 
         /* 입력 창 영역 레이아웃 (PC) */
         .input-group { 
@@ -143,7 +160,7 @@
 <body>
 
 <div class="container">
-    <h1>🏃‍♂️ 용죽러너스 가을대회 맞춤형 여름 훈련 스케줄 생성기 (6~7월)</h1>
+    <h1>🏃‍♂️ 용죽러너스 가을대회 맞춤형 여름/합숙 훈련 스케줄 생성기</h1>
     
     <div class="radio-group">
         <input type="radio" id="race_full" name="race_type" value="full" checked onclick="toggleInputView()">
@@ -154,6 +171,14 @@
         
         <input type="radio" id="race_10k" name="race_type" value="10k" onclick="toggleInputView()">
         <label for="race_10k" class="radio-label">10km 코스</label>
+    </div>
+
+    <div class="radio-group season-group">
+        <input type="radio" id="season_summer" name="season_type" value="6-7" checked>
+        <label for="season_summer" class="radio-label">☀️ 6~7월 (기초 및 혹서기 적응)</label>
+        
+        <input type="radio" id="season_peak" name="season_type" value="8-9">
+        <label for="season_peak" class="radio-label">🍁 8~9월 (실전 빌드업 및 체력 완성)</label>
     </div>
 
     <div class="input-group">
@@ -167,6 +192,7 @@
     <div id="result" class="result-box">
         <div class="section">
             <div class="section-title">🎯 목표 레이스 페이스 요약</div>
+            <p>• 설정하신 훈련 시기: <span id="targetSeasonText" class="highlight" style="color:#ff6f3c;"></span></p>
             <p>• 설정하신 목표 대회: <span id="targetRaceText" class="highlight" style="color:#1e3d59;"></span></p>
             <p>• 설정하신 목표 기록: <span id="targetRecord" class="highlight"></span></p>
             <p>• 대회 당일 필요한 목표 페이스: <span id="fullPace" class="highlight"></span> / km</p>
@@ -175,7 +201,7 @@
         </div>
 
         <div class="section" style="background:#fcf8e3; border-left-color: #f0ad4e;">
-            <div class="section-title">💡 [여름철 혹서기 기준] 훈련별 추천 타깃 페이스</div>
+            <div class="section-title" id="paceTitleText">💡 [여름철 혹서기 기준] 훈련별 추천 타깃 페이스</div>
             <ul>
                 <li>• 수요일 인터벌 페이스 (<span id="pIntervalRatio" style="font-weight:bold; color:#d9534f;"></span>): <span id="pInterval" style="font-weight:bold;"></span> / km</li>
                 <li>• 수요일 템포런 (지속 페이스): <span id="pTempo" style="font-weight:bold;"></span> / km</li>
@@ -246,6 +272,8 @@
 
     function generateSchedule() {
         let raceType = document.querySelector('input[name="race_type"]:checked').value;
+        let seasonType = document.querySelector('input[name="season_type"]:checked').value;
+        
         let hours = parseInt(document.getElementById('hours').value) || 0;
         let minutes = parseInt(document.getElementById('minutes').value) || 0;
         let seconds = parseInt(document.getElementById('seconds').value) || 0;
@@ -253,50 +281,81 @@
         let totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
         let distance = 42.195;
         let raceName = "풀코스(42.195km)";
+        let seasonName = seasonType === '6-7' ? "6~7월 (기초 및 혹서기 적응)" : "8~9월 (실전 빌드업 및 체력 완성)";
         
+        // 시기별 타이틀 문구 셋팅
+        document.getElementById('paceTitleText').innerText = seasonType === '6-7' ? "💡 [여름철 혹서기 기준] 훈련별 추천 타깃 페이스" : "💡 [8~9월 실전 빌드업 기준] 훈련별 추천 타깃 페이스";
+
+        // 디폴트 거리 및 볼륨 변수 (6-7월 기준)
         let lsdDistA = 30; let lsdDistB = 16;
         let volA = "약 62~70km"; let volB = "약 48~56km";
         
         let ratioText = "1000m/400m"; 
         let intervalText = "1000m 질주 x 5~6세트 (세트 사이 400m 조깅/도보 휴식)";
 
-        if (raceType === 'half') {
+        // 8~9월 풀코스/하프/10k 거리 및 볼륨 조정 분기
+        if (raceType === 'full') {
+            if (seasonType === '8-9') {
+                lsdDistA = 35; // 거리 상향 (실전 내성 강화)
+                lsdDistB = 18;
+                volA = "약 70~82km";
+                volB = "약 55~65km";
+            }
+        } else if (raceType === 'half') {
             distance = 21.0975;
             raceName = "하프 코스(21.0975km)";
-            lsdDistA = 18; lsdDistB = 12;
-            volA = "약 45~52km"; volB = "약 35~42km";
             ratioText = "1000m/400m";
+            if (seasonType === '8-9') {
+                lsdDistA = 22; // 가을 대회를 겨냥한 오버거리 훈련 반영
+                lsdDistB = 14;
+                volA = "약 52~60km";
+                volB = "약 40~48km";
+            } else {
+                lsdDistA = 18; lsdDistB = 12;
+                volA = "약 45~52km"; volB = "약 35~42km";
+            }
             intervalText = "1000m 질주 x 4~5세트 (세트 사이 400m 조깅/도보 휴식)";
         } else if (raceType === '10k') {
             distance = 10.0;
             raceName = "10km 코스";
-            lsdDistA = 14; lsdDistB = 8;
-            volA = "약 35~40km"; volB = "약 25~30km";
             ratioText = "400m/200m";
+            if (seasonType === '8-9') {
+                lsdDistA = 16;
+                lsdDistB = 10;
+                volA = "약 40~46km";
+                volB = "약 30~36km";
+            } else {
+                lsdDistA = 14; lsdDistB = 8;
+                volA = "약 35~40km"; volB = "약 25~30km";
+            }
             intervalText = "400m 질주 x 8~10세트 (세트 사이 200m 조깅/도보 휴식)";
         }
 
         let fullPaceSec = totalSeconds / distance;
         let intSec, tmpSec, jogSec, lsdSec, recSec;
         
+        // 페이스 보정 분기 (8~9월은 습도가 내려가고 선선해지기 시작하므로 가을 레이스 리듬에 맞춰 페이스를 6~7월보다 조금 더 실전적으로 조여줌)
         if (raceType === 'full') {
+            let offset = seasonType === '8-9' ? 5 : 0; // 8-9월은 기온 하강 대비 조깅/LSD 페이스를 5초씩 당겨 잡음
             intSec = fullPaceSec - 35;
             tmpSec = fullPaceSec - 18;
-            jogSec = fullPaceSec + 35;
-            lsdSec = fullPaceSec + 55; 
-            recSec = fullPaceSec + 85;
+            jogSec = fullPaceSec + 35 - offset;
+            lsdSec = fullPaceSec + 55 - offset; 
+            recSec = fullPaceSec + 85 - offset;
         } else if (raceType === 'half') {
+            let offset = seasonType === '8-9' ? 5 : 0;
             intSec = fullPaceSec - 20;
             tmpSec = fullPaceSec - 5;
-            jogSec = fullPaceSec + 40;
-            lsdSec = fullPaceSec + 50; 
-            recSec = fullPaceSec + 80;
+            jogSec = fullPaceSec + 40 - offset;
+            lsdSec = fullPaceSec + 50 - offset; 
+            recSec = fullPaceSec + 80 - offset;
         } else { 
+            let offset = seasonType === '8-9' ? 5 : 0;
             intSec = fullPaceSec - 15; 
-            tmpSec = fullPaceSec + 10; 
-            jogSec = fullPaceSec + 50;
-            lsdSec = fullPaceSec + 60;
-            recSec = fullPaceSec + 90;
+            tmpSec = fullPaceSec + 10 - offset; 
+            jogSec = fullPaceSec + 50 - offset;
+            lsdSec = fullPaceSec + 60 - offset;
+            recSec = fullPaceSec + 90 - offset;
         }
 
         let targetPaceStr = formatPaceShort(fullPaceSec);
@@ -304,12 +363,9 @@
         let tmpPaceStr = formatPaceShort(tmpSec);
 
         let subTargetsHTML = "";
-if (raceType === 'full') {
+        if (raceType === 'full') {
             let reqHalfSec = totalSeconds / 2.11;
-            // 10km 기준 기록 계산 (풀코스 기록의 약 4.65배를 2.15로 나눈 값 혹은 보정치 적용)
-            // 10km 기록은 풀코스 기록의 대략 0.22~0.23배 수준으로 설정
             let req10kSec = totalSeconds * 0.224; 
-            
             subTargetsHTML = `
                 <p>📊 <strong>권장 서브 대회 기록 가이드:</strong></p>
                 <p>• 필요한 하프 기록: <span class="sub-target-highlight">${formatTime(reqHalfSec)}</span> 내외</p>
@@ -322,7 +378,6 @@ if (raceType === 'full') {
                 <p>• 필요한 10km 기록: <span class="sub-target-highlight">${formatTime(req10kSec)}</span> 내외</p>
             `;
         } else if (raceType === '10k') {
-            // 10km가 타깃일 경우, 기초 스피드 지표로 5km를 유지하거나 그대로 둡니다.
             let req5kSec = totalSeconds / 2.13;
             subTargetsHTML = `
                 <p>📊 <strong>권장 서브 대회 기록 가이드:</strong></p>
@@ -330,13 +385,14 @@ if (raceType === 'full') {
             `;
         }
 
+        // 공통 상단 데이터 매핑
         document.getElementById('subTargetsArea').innerHTML = subTargetsHTML;
+        document.getElementById('targetSeasonText').innerText = seasonName;
         document.getElementById('targetRaceText').innerText = raceName;
         document.getElementById('targetRecord').innerText = `${hours > 0 ? hours + '시간 ' : ''}${minutes}분 ${seconds}초`;
         document.getElementById('fullPace').innerText = formatPace(fullPaceSec);
         
         document.getElementById('pIntervalRatio').innerText = ratioText;
-        
         document.getElementById('pInterval').innerText = `${formatPace(intSec)} ~ ${formatPace(intSec+5)}`;
         document.getElementById('pTempo').innerText = `${formatPace(tmpSec)} ~ ${formatPace(tmpSec+5)}`;
         document.getElementById('pJog').innerText = `${formatPace(jogSec)} ~ ${formatPace(jogSec+15)}`;
@@ -346,27 +402,23 @@ if (raceType === 'full') {
         document.getElementById('titleA').innerText = `📅 [A주] 장거리 집중 주 스케줄 (${volA})`;
         document.getElementById('titleB').innerText = `📅 [B주] 역치 및 트랙정모 주 스케줄 (${volB})`;
 
-        let crewRoutineA = raceType === 'full' ? `<strong>[내일 30km LSD를 위한 리듬 빌드업 조깅]</strong><br>1. 웜업: 가볍게 1.2km(트랙 3바퀴) 회복 조깅 후 다 같이 동적 스트레칭<br>2. 본훈련: 크루원들과 대화 페이스(${jogPaceStr})로 출발하여 6km(트랙 15바퀴) 편안하게 순항 후, 마지막 2km(트랙 5바퀴)만 대회 페이스(${targetPaceStr})로 완주 (총 8km)<br>3. 쿨다운: 거꾸로 0.8km(트랙 2바퀴) 아주 천천히 걸으며 회복` : (raceType === 'half' ? `<strong>[스피드 감각 유지를 위한 크루 팩 조깅]</strong><br>1. 웜업: 1.2km(트랙 3바퀴) 천천히 조깅 및 크루 체조<br>2. 본훈련: 크루 조깅 페이스(${jogPaceStr})로 4.8km(트랙 12바퀴) 달린 후, 마지막 1.2km(트랙 3바퀴)를 하프 목표 페이스(${targetPaceStr})로 완주 (총 6km)<br>3. 쿨다운: 트랙 안쪽 따라 0.8km(트랙 2바퀴) 편하게 걸으며 호흡 가라앉히기` : `<strong>[지속력 리듬 유지를 위한 가벼운 트랙 조깅]</strong><br>1. 웜업: 1.2km(트랙 3바퀴) 걷기 및 체조<br>2. 본훈련: 평일 조깅 페이스(${jogPaceStr})로 6km(트랙 15바퀴) 리듬있게 밀기<br>3. 쿨다운: 0.4km(트랙 1바퀴) 차분히 걸으며 호흡 조절 후 훈련 마무리`);
-        
-        // [수정 포인트] 토요일 B주 안내에 업힐 특별 커스텀 대체 코멘트 추가
-        let crewRoutineB = raceType === 'full' ? `<strong>[하체 심폐 한계 돌파를 위한 트랙 크루즈 지속주]</strong><br>1. 웜업: 1.6km(트랙 4바퀴) 조깅 및 50m 질주 3회<br>2. 본훈련: **8km(트랙 20바퀴) 지속 템포런** 수행 (페이스: ${tmpPaceStr} 일정하게 사수)<br>3. 쿨다운: 가볍게 0.8km(트랙 2바퀴) 걷기 및 하체 정적 스트레칭<br><span style="color:#ff6f3c; font-weight:bold;">⛰️ [개인 업힐 대체 팁]:</span> 이번 주 정모 참여가 어렵다면 수요일 혹은 오늘 토요일에 평지 대신 경사도 4~6% 언덕에서 [150m 전력 질주 x 7~8세트 (다운힐은 느린 조깅 회복)]로 대치하면 가을 풀코스 후반에 절대 털리지 않는 킹하체를 얻을 수 있습니다.` : (raceType === 'half' ? `<strong>[트랙 5km 타임트라이얼(TT) 조별 레이스]</strong><br>1. 웜업: 1.6km(트랙 4바퀴) 빌드업 조깅 + 100m 질주 2회<br>2. 본훈련: **5km(트랙 12.5바퀴) 전력 TT 측정** (서로 끌어주며 정모 시너지 효과)<br>3. 쿨다운: 회복 조깅 0.8km(트랙 2바퀴) 및 꼼꼼한 스트레칭<br><span style="color:#ff6f3c; font-weight:bold;">⛰️ [개인 업힐 대체 팁]:</span> 스피드 마진 확보를 위해 주중에 언덕 질주 [150m x 5~6세트]를 한 번 섞어주면 트랙에서 밀고 나가는 치고 나가는 힘이 배로 좋아집니다.` : `<strong>[용죽러너스 10k 타깃 5km 전력 TT 매치]</strong><br>1. 웜업: 1.6km(트랙 4바퀴) 조깅 및 동적 체조 필수<br>2. 본훈련: **5km(트랙 12.5바퀴) 개인 PB 도전 TT 측정** (10k 레이스 페이스보다 5~10초 빠르게 질주)<br>3. 쿨다운: 천천히 1km(트랙 2.5바퀴) 도보 회복 및 완벽한 스트레칭<br><span style="color:#ff6f3c; font-weight:bold;">⛰️ [개인 업힐 대체 팁]:</span> 심폐 한계를 뚫기 위해 가끔 주말 개인 세션 시 언덕 인터벌 세트를 추가하는 것을 적극 추천합니다.`);
+        // 크루 정모 루틴 내용 시기별 분기 처리 생성
+        let crewRoutineA = "";
+        let crewRoutineB = "";
 
-        document.getElementById('subTargetsArea').innerHTML = subTargetsHTML;
-        document.getElementById('targetRaceText').innerText = raceName;
-        document.getElementById('targetRecord').innerText = `${hours > 0 ? hours + '시간 ' : ''}${minutes}분 ${seconds}초`;
-        document.getElementById('fullPace').innerText = formatPace(fullPaceSec);
-        
-        document.getElementById('pIntervalRatio').innerText = ratioText;
-        
-        document.getElementById('pInterval').innerText = `${formatPace(intSec)} ~ ${formatPace(intSec+5)}`;
-        document.getElementById('pTempo').innerText = `${formatPace(tmpSec)} ~ ${formatPace(tmpSec+5)}`;
-        document.getElementById('pJog').innerText = `${formatPace(jogSec)} ~ ${formatPace(jogSec+15)}`;
-        document.getElementById('pLsd').innerText = `${formatPace(lsdSec)} ~ ${formatPace(lsdSec+15)}`;
-        document.getElementById('pRecovery').innerText = `${formatPace(recSec)} ~ ${formatPace(recSec+15)}`;
+        if (seasonType === '6-7') {
+            // 기존 6-7월 혹서기 전용 루틴 코드 유지
+            crewRoutineA = raceType === 'full' ? `<strong>[내일 30km LSD를 위한 리듬 빌드업 조깅]</strong><br>1. 웜업: 가볍게 1.2km(트랙 3바퀴) 회복 조깅 후 다 같이 동적 스트레칭<br>2. 본훈련: 크루원들과 대화 페이스(${jogPaceStr})로 출발하여 6km(트랙 15바퀴) 편안하게 순항 후, 마지막 2km(트랙 5바퀴)만 대회 페이스(${targetPaceStr})로 완주 (총 8km)<br>3. 쿨다운: 거꾸로 0.8km(트랙 2바퀴) 아주 천천히 걸으며 회복` : (raceType === 'half' ? `<strong>[스피드 감각 유지를 위한 크루 팩 조깅]</strong><br>1. 웜업: 1.2km(트랙 3바퀴) 천천히 조깅 및 크루 체조<br>2. 본훈련: 크루 조깅 페이스(${jogPaceStr})로 4.8km(트랙 12바퀴) 달린 후, 마지막 1.2km(트랙 3바퀴)를 하프 목표 페이스(${targetPaceStr})로 완주 (총 6km)<br>3. 쿨다운: 트랙 안쪽 따라 0.8km(트랙 2바퀴) 편하게 걸으며 호흡 가라앉히기` : `<strong>[지속력 리듬 유지를 위한 가벼운 트랙 조깅]</strong><br>1. 웜업: 1.2km(트랙 3바퀴) 걷기 및 체조<br>2. 본훈련: 평일 조깅 페이스(${jogPaceStr})로 6km(트랙 15바퀴) 리듬있게 밀기<br>3. 쿨다운: 0.4km(트랙 1바퀴) 차분히 걸으며 호흡 조절 후 훈련 마무리`);
+            
+            crewRoutineB = raceType === 'full' ? `<strong>[하체 심폐 한계 돌파를 위한 트랙 크루즈 지속주]</strong><br>1. 웜업: 1.6km(트랙 4바퀴) 조깅 및 50m 질주 3회<br>2. 본훈련: **8km(트랙 20바퀴) 지속 템포런** 수행 (페이스: ${tmpPaceStr} 일정하게 사수)<br>3. 쿨다운: 가볍게 0.8km(트랙 2바퀴) 걷기 및 하체 정적 스트레칭<br><span style="color:#ff6f3c; font-weight:bold;">⛰️ [개인 업힐 대체 팁]:</span> 이번 주 정모 참여가 어렵다면 수요일 혹은 오늘 토요일에 평지 대신 경사도 4~6% 언덕에서 [150m 전력 질주 x 7~8세트 (다운힐은 느린 조깅 회복)]로 대치하면 가을 풀코스 후반에 절대 털리지 않는 킹하체를 얻을 수 있습니다.` : (raceType === 'half' ? `<strong>[트랙 5km 타임트라이얼(TT) 조별 레이스]</strong><br>1. 웜업: 1.6km(트랙 4바퀴) 빌드업 조깅 + 100m 질주 2회<br>2. 본훈련: **5km(트랙 12.5바퀴) 전력 TT 측정** (서로 끌어주며 정모 시너지 효과)<br>3. 쿨다운: 회복 조깅 0.8km(트랙 2바퀴) 및 꼼꼼한 스트레칭<br><span style="color:#ff6f3c; font-weight:bold;">⛰️ [개인 업힐 대체 팁]:</span> 스피드 마진 확보를 위해 주중에 언덕 질주 [150m x 5~6세트]를 한 번 섞어주면 트랙에서 밀고 나가는 치고 나가는 힘이 배로 좋아집니다.` : `<strong>[용죽러너스 10k 타깃 5km 전력 TT 매치]</strong><br>1. 웜업: 1.6km(트랙 4바퀴) 조깅 및 동적 체조 필수<br>2. 본훈련: **5km(트랙 12.5바퀴) 개인 PB 도전 TT 측정** (10k 레이스 페이스보다 5~10초 빠르게 질주)<br>3. 쿨다운: 천천히 1km(트랙 2.5바퀴) 도보 회복 및 완벽한 스트레칭<br><span style="color:#ff6f3c; font-weight:bold;">⛰️ [개인 업힐 대체 팁]:</span> 심폐 한계를 뚫기 위해 가끔 주말 개인 세션 시 언덕 인터벌 세트를 추가하는 것을 적극 추천합니다.`);
+        } else {
+            // 새로운 8-9월 합숙 및 가을 레이스 실전 빌드업 루틴 코드 분기 추가
+            crewRoutineA = raceType === 'full' ? `<strong>[내일 고강도 ${lsdDistA}km 실전 LSD 대비 페이스 조절 조깅]</strong><br>1. 웜업: 1.2km 가벼운 회복 조깅 후 정적/동적 전신 스트레칭<br>2. 본훈련: 크루원들과 실전 감각 공유하며 8km(트랙 20바퀴) 편안한 빌드업 러닝 (초반 ${jogPaceStr} 진입 후 마지막 2km만 목표 레이스 페이스인 ${targetPaceStr}로 완벽 홀딩)<br>3. 쿨다운: 1km 도보 회복 및 충분한 수분 섭취로 내일 대미지 방지` : (raceType === 'half' ? `<strong>[실전 팩 러닝 및 레이스 감각 완성 세션]</strong><br>1. 웜업: 1.6km 조깅 및 고관절 동적 체조<br>2. 본훈련: 크루 팩 조깅으로 6km 순항 후, 마지막 2km를 하프 레이스 타깃 페이스(${targetPaceStr})로 정확하게 밀어붙이기 (총 8km 완수)<br>3. 쿨다운: 가볍게 0.8km 쿨다운 조깅 및 하체 스트레칭` : `<strong>[10k 스피드 지구력 완성을 위한 리드미컬 트랙 조깅]</strong><br>1. 웜업: 1.2km 천천히 걷기 및 조깅<br>2. 본훈련: 평일 조깅 페이스(${jogPaceStr})로 7~8km 리듬감 사수하며 밀기 (마지막 1바퀴만 쇼트 대시)<br>3. 쿨다운: 0.8km 천천히 걸으며 심박 가라앉히기`);
+            
+            crewRoutineB = raceType === 'full' ? `<strong>[실전 역치 한계 상향을 위한 트랙 혼성 크루즈 템포 세션]</strong><br>1. 웜업: 2km 빌드업 조깅 + 100m 숏 스트라이드 3회<br>2. 본훈련: **10km(트랙 25바퀴) 실전 고강도 지속 템포런** (페이스: 강력하게 ${tmpPaceStr} 유지)<br>3. 쿨다운: 1.2km 천천히 조깅하며 젖산 분해 및 정적 스트레칭 마감<br><span style="color:#ff6f3c; font-weight:bold;">⛰️ [개인 업힐 대체 팁]:</span> 가을 풀코스 후반 언덕과 근지구력 소모를 대비해 토요일 개인 세션 시 평지 대신 언덕 업힐 인터벌 [200m 전력 질주 x 6~7세트]로 강력하게 허벅지를 구워주는 대체 훈련을 강력히 추천합니다.` : (raceType === 'half' ? `<strong>[가을 하프 레이스 모의고사: 트랙 7km TT 매치]</strong><br>1. 웜업: 2km 조깅 및 동적 웜업 밸런스 운동<br>2. 본훈련: **7km(트랙 17.5바퀴) 실전 강도 타임트라이얼** (하프 목표 페이스 ${targetPaceStr} 유지 능력 극대화)<br>3. 쿨다운: 1km 리커버리 러닝 및 폼롤러 스트레칭 권장<br><span style="color:#ff6f3c; font-weight:bold;">⛰️ [개인 업힐 대체 팁]:</span> 심폐 한계와 페이스 마진 확보를 위해 주말 다운힐 체중 제어 능력과 업힐 질주 [150m x 6세트]를 대체 조합해 보길 권장합니다.` : `<strong>[10km 레이스 최종 점검: 트랙 5km PB 타깃 전력 레이스]</strong><br>1. 웜업: 2km 리드미컬 조깅 및 질주 3회 필수<br>2. 본훈련: **5km(트랙 12.5바퀴) 전력 PB 측정** (가을 10k 목표 페이스보다 5~10초 당겨서 심폐 한계 자극)<br>3. 쿨다운: 1.2km 완전 회복 도보 및 완벽한 마사지 스트레칭<br><span style="color:#ff6f3c; font-weight:bold;">⛰️ [개인 업힐 대체 팁]:</span> 순간적인 치고 나가는 근지구력을 확보하기 위해 고강도 언덕 인터벌 세션을 주말 개인 프로그램으로 병행하면 트랙 기록이 급상승합니다.`);
+        }
 
-        document.getElementById('titleA').innerText = `📅 [A주] 장거리 집중 주 스케줄 (${volA})`;
-        document.getElementById('titleB').innerText = `📅 [B주] 역치 및 트랙정모 주 스케줄 (${volB})`;
-
+        // 스케줄 데이터 최종 렌더링
         document.getElementById('scheduleA').innerHTML = `
             <li><strong>월요일 (리커버리):</strong> 6~7km 조깅 (페이스: ${formatPaceShort(recSec)} ~ ${formatPaceShort(recSec+15)})</li>
             <li><strong>화요일 (완전휴식):</strong> 러닝 전면 중단 및 스트레칭</li>
@@ -379,7 +431,6 @@ if (raceType === 'full') {
             <li><strong>일요일 (핵심LSD):</strong> <span class="highlight">★ ${lsdDistA}km 혹서기 장거리 러닝</span> (페이스: ${formatPaceShort(lsdSec)} ~ ${formatPaceShort(lsdSec+15)})</li>
         `;
 
-        // [수정 포인트] B주 금요일 완전 휴식 명분 강화 코멘트 세팅
         document.getElementById('scheduleB').innerHTML = `
             <li><strong>월요일 (리커버리):</strong> 6~7km 조깅 (페이스: ${formatPaceShort(recSec)} ~ ${formatPaceShort(recSec+15)})</li>
             <li><strong>화요일 (완전휴식):</strong> 러닝 전면 중단 (회복 최우선)</li>
