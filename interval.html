@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>인터벌 4종 분석 인포그래픽 이미지</title>
+    <style>
+        /* 나노바나나 뷰어 전용 꽉 찬 이미지 레이아웃 설정 */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111625; /* 고급스러운 다크 테마 background */
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        /* 전체가 하나의 깔끔한 이미지 카드처럼 보이도록 묶음 */
+        .infographic-image-board {
+            width: 100%;
+            max-width: 500px; /* 스마트폰 세로 화면에 완벽 최적화 */
+            background: #1a2238;
+            padding: 30px 24px;
+            box-sizing: border-box;
+            color: #ffffff;
+            position: relative;
+        }
+
+        /* 헤더 디자인 */
+        .header-area {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px dashed #313f63;
+            padding-bottom: 15px;
+        }
+        .header-area h1 {
+            font-size: 22px;
+            font-weight: 900;
+            color: #00e676; /* 형광 그린 포인트 */
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
+        }
+        .header-area p {
+            font-size: 13px;
+            color: #a0aec0;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* 상단 스펙트럼 인디케이터 */
+        .direction-indicator {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: bold;
+            color: #718096;
+            margin-bottom: 20px;
+            background: #111625;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid #2d3748;
+        }
+        .dir-left { color: #4caf50; }
+        .dir-right { color: #ff5252; }
+
+        /* 핵심 아이템 카드 루틴 */
+        .interval-item {
+            background: #222d4a;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 5px solid #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .item-title {
+            font-size: 16px;
+            font-weight: 800;
+        }
+        .item-badge {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* 장단점 텍스트 박스 */
+        .line-box {
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 6px;
+            word-break: keep-all;
+        }
+        .pro-line { color: #b9f6ca; } /* 연그린 */
+        .con-line { color: #ff8a80; } /* 연레드 */
+        
+        .footer-tip {
+            font-size: 11.5px;
+            color: #00e676;
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px dashed #313f63;
+            font-weight: 600;
+        }
+
+        /* 하단 푸터 표식 */
+        .footer-logo {
+            text-align: center;
+            font-size: 11px;
+            color: #4a5568;
+            margin-top: 25px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="infographic-image-board">
+    
+    <div class="header-area">
+        <h1>📊 INTERVAL MATRIX</h1>
+        <p>목표 풀코스 3시간 9분 주자를 위한 4종 비교 가이드</p>
+    </div>
+
+    <div class="direction-indicator">
+        <span class="dir-left">◀ 풀코스 순항·지구력형</span>
+        <span class="dir-right">단거리 절대스피드형 ▶</span>
+    </div>
+
+    <!-- 1번 카드 -->
+    <div class="interval-item" style="border-left-color: #00e676;">
+        <div class="item-header">
+            <span class="item-title" style="color: #00e676;">🏃‍♂️ 1,000m / 400m</span>
+            <span class="item-badge" style="background: rgba(0,230,118,0.15); color: #00e676;">풀코스 최적</span>
+        </div>
+        <div class="line-box pro-line"><strong>👍 장점:</strong> 충분한 회복으로 매 세트 목표 스피드(3'55"~4'00") 보장 및 부상 방지</div>
+        <div class="line-box con-line"><strong>👎 단점:</strong> 회복 거리가 길어 전체 훈련 세션 시간이 다소 길어짐</div>
+        <div class="footer-tip">🎯 6~7월 빌드업기 심폐 지구력 확보를 위한 메인 카드</div>
+    </div>
+
+    <!-- 2번 카드 -->
+    <div class="interval-item" style="border-left-color: #29b6f6;">
+        <div class="item-header">
+            <span class="item-title" style="color: #29b6f6;">⏱️ 야소 800 (800m/400m)</span>
+            <span class="item-badge" style="background: rgba(41,182,246,0.15); color: #29b6f6;">기록 예측</span>
+        </div>
+        <div class="line-box pro-line"><strong>👍 장점:</strong> 풀코스 완주 타임 직관적 매칭(3분 9초 질주), 레이스 멘탈 시뮬레이션 최적</div>
+        <div class="line-box con-line"><strong>👎 단점:</strong> 단순 참고 지표일 뿐, 후반 세트(8~10회) 급격한 체력 방전 주의</div>
+        <div class="footer-tip">🎯 8~9월 실전 피크기 최종 컨디션 점검용 세션</div>
+    </div>
+
+    <!-- 3번 카드 -->
+    <div class="interval-item" style="border-left-color: #ffa726;">
+        <div class="item-header">
+            <span class="item-title" style="color: #ffa726;">🔥 1,000m / 200m</span>
+            <span class="item-badge" style="background: rgba(255,167,38,0.15); color: #ffa726;">젖산 내성</span>
+        </div>
+        <div class="line-box pro-line"><strong>👍 장점:</strong> 불완전 회복으로 심폐 한계 자극 극대화, 젖산 버팀성 및 정신력 강화</div>
+        <div class="line-box con-line"><strong>👎 단점:</strong> 후반부 페이스 밀림 현상 빈번, 다리가 잠긴 상태라 부상 위험 증가</div>
+        <div class="footer-tip">🎯 10km~하프 코스 후반부 유지력 폭발 타깃</div>
+    </div>
+
+    <!-- 4번 카드 -->
+    <div class="interval-item" style="border-left-color: #ff5252;">
+        <div class="item-header">
+            <span class="item-title" style="color: #ff5252;">⚡ 400m / 200m</span>
+            <span class="item-badge" style="background: rgba(255,82,82,0.15); color: #ff5252;">절대 스피드</span>
+        </div>
+        <div class="line-box pro-line"><strong>👍 장점:</strong> 빠른 피치 및 보폭 세포 자극, 러닝 이코노미(달리기 효율성) 개선</div>
+        <div class="line-box con-line"><strong>👎 단점:</strong> 풀코스 지구력과 거리감 있음, 햄스트링/아킬레스건 급성 부상 주의</div>
+        <div class="footer-tip">🎯 스피드 마진 한계를 뚫어주기 위한 보조적 스피드 세션</div>
+    </div>
+
+    <div class="footer-logo">RUNNING SCHEDULE MATRIX v1.6</div>
+</div>
+
+</body>
+</html>
