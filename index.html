@@ -317,24 +317,25 @@
         
         document.getElementById('paceTitleText').innerText = seasonType === '6-7' ? "💡 [여름철 혹서기 기준] 훈련별 추천 타깃 페이스" : "💡 [8~9월 실전 빌드업 기준] 훈련별 추천 타깃 페이스";
 
-        let lsdDistA = 16; let lsdDistB = 30;
-        let volA = "약 48~56km"; let volB = "약 62~70km";
+        // lsdDistA: 인터벌 주간 미니 LSD / lsdDistB: 역치 주간 핵심 장거리 LSD[cite: 1]
+        let lsdDistA = 16; let lsdDistB = 30;[cite: 1]
+        let volA = "약 48~56km"; let volB = "약 62~70km";[cite: 1]
         
         let ratioText = "1000m/400m"; 
         let intervalText = "1000m 질주 x 5~6세트 (세트 사이 400m 조깅/도보 휴식)";
 
         if (raceType === 'full') {
             if (seasonType === '8-9') {
-                lsdDistA = 18; volA = "약 55~65km"; lsdDistB = 35; volB = "약 70~82km";
+                lsdDistA = 18; volA = "약 55~65km"; lsdDistB = 35; volB = "약 70~82km";[cite: 1]
             }
         } else if (raceType === 'half') {
             distance = 21.0975;
             raceName = "하프 코스(21.0975km)";
             ratioText = "1000m/400m";
             if (seasonType === '8-9') {
-                lsdDistA = 14; lsdDistB = 22; volA = "약 40~48km"; volB = "약 52~60km";
+                lsdDistA = 14; lsdDistB = 22; volA = "약 40~48km"; volB = "약 52~60km";[cite: 1]
             } else {
-                lsdDistA = 12; lsdDistB = 18; volA = "약 35~42km"; volB = "약 45~52km";
+                lsdDistA = 12; lsdDistB = 18; volA = "약 35~42km"; volB = "약 45~52km";[cite: 1]
             }
             intervalText = "1000m 질주 x 4~5세트 (세트 사이 400m 조깅/도보 휴식)";
         } else if (raceType === '10k') {
@@ -342,9 +343,9 @@
             raceName = "10km 코스";
             ratioText = "400m/200m";
             if (seasonType === '8-9') {
-                lsdDistA = 10; lsdDistB = 16; volA = "약 30~36km"; volB = "약 40~46km";
+                lsdDistA = 10; lsdDistB = 16; volA = "약 30~36km"; volB = "약 40~46km";[cite: 1]
             } else {
-                lsdDistA = 8; lsdDistB = 14; volA = "약 25~30km"; volB = "약 35~40km";
+                lsdDistA = 8; lsdDistB = 14; volA = "약 25~30km"; volB = "약 35~40km";[cite: 1]
             }
             intervalText = "400m 질주 x 8~10세트 (세트 사이 200m 조깅/도보 휴식)";
         }
@@ -439,7 +440,7 @@
             crewRoutineA = raceType === 'full' ? `<strong>[내일 미니 LSD를 위한 리듬 빌드업 조깅]</strong><br>1. 웜업: 가볍게 1.2km 회복 조깅 후 다 같이 동적 스트레칭<br>2. 본훈련: 크루원들과 대화 페이스(${jogPaceStr})로 출발하여 6km 편안하게 순항 후, 마지막 2km만 대회 페이스(${targetPaceStr})로 완주 (총 8km)<br>3. 쿨다운: 거꾸로 0.8km 아주 천천히 걸으며 회복` : (raceType === 'half' ? `<strong>[스피드 감각 유지를 위한 크루 팩 조깅]</strong><br>1. 웜업: 1.2km 천천히 조깅 및 크루 체조<br>2. 본훈련: 크루 조깅 페이스(${jogPaceStr})로 4.8km 달린 후, 마지막 1.2km를 하프 목표 페이스(${targetPaceStr})로 완주 (총 6km)<br>3. 쿨다운: 트랙 안쪽 따라 0.8km 편하게 걸으며 호흡 가라앉히기` : `<strong>[지속력 리듬 유지를 위한 가벼운 트랙 조깅]</strong><br>1. 웜업: 1.2km 걷기 및 체조<br>2. 본훈련: 평일 조깅 페이스(${jogPaceStr})로 6km 리듬있게 밀기<br>3. 쿨다운: 0.4km 차분히 걸으며 호흡 조절 후 훈련 마무리`);
             crewRoutineB = raceType === 'full' ? `<strong>[하체 심폐 한계 돌파를 위한 트랙 크루즈 지속주]</strong><br>1. 웜업: 1.6km 조깅 및 50m 질주 3회<br>2. 본훈련: **8km 지속 템포런** 수행 (페이스: ${tmpPaceStr} 일정하게 사수)<br>3. 쿨다운: 가볍게 0.8km 걷기 및 하체 정적 스트레칭` : (raceType === 'half' ? `<strong>[트랙 5km 타임트라이얼(TT) 조별 레이스]</strong><br>1. 웜업: 1.6km 빌드업 조깅 + 100m 질주 2회<br>2. 본훈련: **5km 전력 TT 측정** (서로 끌어주며 정모 시너지 효과)<br>3. 쿨다운: 회복 조깅 0.8km 및 꼼꼼한 스트레칭` : `<strong>[용죽러너스 10k 타깃 5km 전력 TT 매치]</strong><br>1. 웜업: 1.6km 조깅 및 동적 체조 필수<br>2. 본훈련: **5km 개인 PB 도전 TT 측정**<br>3. 쿨다운: 천천히 1km 도보 회복 및 완벽한 스트레칭`);
         } else {
-            crewRoutineA = raceType === 'full' ? `<strong>[내일 미니 LSD 대비 페이스 조절 조깅]</strong><br>1. 웜업: 1.2km 가벼운 회복 조깅 후 정적/동적 전신 스트레칭<br>2. 본훈련: 크루원들과 실전 감각 공유하며 8km 편안한 빌드업 러닝 (초반 ${jogPaceStr} 진입 후 마지막 2km만 목표 레이스 페이스인 ${targetPaceStr}로 완벽 홀딩)<br>3. 쿨다운: 1km 도보 회복 및 충분한 수분 섭취로 회복력 극대화` : (raceType === 'half' ? `<strong>[실전 팩 러닝 및 레이스 감각 완성 세션]</strong><br>1. 웜업: 1.6km 조깅 및 고관절 동적 체조<br>2. 본훈련: 크루 팩 조깅으로 6km 순항 후, 마지막 2km를 하프 레이스 타깃 페이스(${targetPaceStr})로 정확하게 밀어붙이기 (총 8km 완수)<br>3. 쿨다운: 가볍게 0.8km 쿨다운 조깅 및 하체 스트레칭` : `<strong>[10k 스피드 지구력 완성을 위한 리드미컬 트랙 조깅]</strong><br>1. 웜업: 1.2km 천천히 걷기 및 조깅<br>2. 본훈련: 평일 조깅 페이스(${jogPaceStr})로 7~8km 리듬감 사수하며 밀기<br>3. 쿨다운: 0.8km 천천히 걸으며 심박 가라앉히기`);
+            crewRoutineA = raceType === 'full' ? `<strong>[내일 미니 LSD 대비 페이스 조절 조깅]</strong><br>1. 웜업: 1.2km 가벼운 회복 조깅 후 정적/동적 전신 스트레칭<br>2. 본훈련: 크루원들과 실전 감각 공유하며 8km 편안한 빌드업 러닝 (초반 ${jogPaceStr} 진입 후 마지막 2km만 목표 레이스 페이스인 ${targetPaceStr}로 완벽 HOLDING)<br>3. 쿨다운: 1km 도보 회복 및 충분한 수분 섭취로 회복력 극대화` : (raceType === 'half' ? `<strong>[실전 팩 러닝 및 레이스 감각 완성 세션]</strong><br>1. 웜업: 1.6km 조깅 및 고관절 동적 체조<br>2. 본훈련: 크루 팩 조깅으로 6km 순항 후, 마지막 2km를 하프 레이스 타깃 페이스(${targetPaceStr})로 정확하게 밀어붙이기 (총 8km 완수)<br>3. 쿨다운: 가볍게 0.8km 쿨다운 조깅 및 하체 스트레칭` : `<strong>[10k 스피드 지구력 완성을 위한 리드미컬 트랙 조깅]</strong><br>1. 웜업: 1.2km 천천히 걷기 및 조깅<br>2. 본훈련: 평일 조깅 페이스(${jogPaceStr})로 7~8km 리듬감 사수하며 밀기<br>3. 쿨다운: 0.8km 천천히 걸으며 심박 가라앉히기`);
             crewRoutineB = raceType === 'full' ? `<strong>[내일 고강도 ${lsdDistB}km 실전 LSD 대비 페이스 조절 조깅]</strong><br>1. 웜업: 2km 빌드업 조깅 + 100m 숏 스트라이드 3회<br>2. 본훈련: **10km 실전 고강도 지속 템포런** (페이스: 강력하게 ${tmpPaceStr} 유지)<br>3. 쿨다운: 1.2km 천천히 조깅하며 젖산 분해 및 정적 스트레칭 마감` : (raceType === 'half' ? `<strong>[가을 하프 레이스 모의고사: 트랙 7km TT 매치]</strong><br>1. 웜업: 2km 조깅 및 동적 웜업 밸런스 운동<br>2. 본훈련: **7km 실전 강도 타임트라이얼** (하프 목표 페이스 ${targetPaceStr} 유지 능력 극대화)<br>3. 쿨다운: 1개년 리커버리 러닝 및 폼롤러 스트레칭 권장` : `<strong>[10km 레이스 최종 점검: 트랙 5km PB 타깃 전력 레이스]</strong><br>1. 웜업: 2km 리드미컬 조깅 및 질주 3회 필수<br>2. 본훈련: **5km 전력 PB 측정** (가을 10k 목표 페이스보다 5~10초 당겨서 심폐 한계 자극)<br>3. 쿨다운: 1.2km 완전 회복 도보 및 완벽한 마사지 스트레칭`);
         }
 
@@ -455,6 +456,7 @@
             wedTrainText = `<span style="color:#702ec9; font-weight:bold;">[대체형 빌드업 러닝]</span> 웜업 2km + **총 10km 빌드업** [초반 3k: 조깅페이스(${startPace}) ➡️ 중반 4k: 목표대회페이스(${midPace}) ➡️ 후반 3k: 역치페이스(${endPace})로 점진적 가속하며 완주] + 쿨다운 2km`;
         }
 
+        // 일요일 거리에 직접 변수 바인딩 교정 (A주: lsdDistA / B주: lsdDistB)[cite: 1]
         document.getElementById('scheduleA').innerHTML = `
             <li><strong>월요일 (리커버리):</strong> 6~7km 조깅 (페이스: ${formatPaceShort(recSec)} ~ ${formatPaceShort(recSec+15)})</li>
             <li><strong>화요일 (완전휴식):</strong> 러닝 전면 중단 및 스트레칭</li>
@@ -465,7 +467,7 @@
                 <div class="inner-routine">${crewRoutineA}</div>
             </li>
             <li><strong>일요일 (회복형 미니LSD):</strong> ${lsdDistA}km 조깅 <span class="highlight">(추천 페이스: ${formatPaceShort(jogSec+15)} ~ ${formatPaceShort(jogSec+30)})</span></li>
-        `;
+        `;[cite: 1]
 
         document.getElementById('scheduleB').innerHTML = `
             <li><strong>월요일 (리커버리):</strong> 6~7km 조깅 (페이스: ${formatPaceShort(recSec)} ~ ${formatPaceShort(recSec+15)})</li>
@@ -477,7 +479,7 @@
                 <div class="inner-routine">${crewRoutineB}</div>
             </li>
             <li><strong>일요일 (핵심LSD):</strong> <span class="highlight">★ ${lsdDistB}km 혹서기 장거리 러닝</span> (페이스: ${formatPaceShort(lsdSec)} ~ ${formatPaceShort(lsdSec+15)})</li>
-        `;
+        `;[cite: 1]
 
         document.getElementById('result').style.display = 'block';
     }
